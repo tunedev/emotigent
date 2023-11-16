@@ -44,6 +44,8 @@ const parser = StructuredOutputParser.fromZodSchema(
 );
 
 const getPrompt = async (content: string) => {
+  console.log("🤖 Prompt crunching...");
+  console.time(`🤖 Prompt crunched`);
   const format_instructions = parser.getFormatInstructions();
 
   const prompt = new PromptTemplate({
@@ -57,6 +59,8 @@ const getPrompt = async (content: string) => {
 };
 
 export const analyze = async (content: string) => {
+  console.log("🤖 Analysis started...");
+  console.time(`🤖 Analysis crunched`);
   const model = new OpenAI({ temperature: 0, modelName: "gpt-3.5-turbo" });
   const prompt = await getPrompt(content);
   const result = await model.call(prompt);
@@ -64,11 +68,22 @@ export const analyze = async (content: string) => {
   try {
     return parser.parse(result);
   } catch (e) {
-    console.log(e);
+    console.error("Error occured while reaching openai", e);
+    return {
+      mood: "neutral",
+      subject: "journal",
+      negative: false,
+      summary: "summary",
+      color: "#ffffff",
+      textColor: "#000000",
+      sentimentScore: 0,
+    };
   }
 };
 
 export const qa = async (question, entries) => {
+  console.log("🤖 QA started...");
+  console.time(`🤖 QA crunched`);
   const docs = entries.map(
     (entry) =>
       new Document({

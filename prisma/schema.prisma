@@ -36,6 +36,7 @@ model JournalEntry {
   analysis Analysis?
 
   @@unique([userId, id])
+  @@index([userId])
 }
 
 model Analysis {
